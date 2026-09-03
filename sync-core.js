@@ -19,7 +19,10 @@
   function isMeaningfulState(state){
     if (!state || typeof state !== 'object') return false;
     if ((state.transactions||[]).length || (state.odometerLogs||[]).length) return true;
+    if ((state.vehicles||[]).length > 1) return true;
     if ((state.vehicles||[]).some(v => Number(v?.odometer||0)>0 || String(v?.plate||'').trim())) return true;
+    if ((state.reminders||[]).some(item => item?.byKm || item?.byTime || (item?.history||[]).length)) return true;
+    if (state.migratedFromV6 && state.migrationSummary) return true;
     return Number(state.preferences?.weeklyGoal||0)>0 || Number(state.preferences?.monthlyGoal||0)>0;
   }
   function itemTime(item){
