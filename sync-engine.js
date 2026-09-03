@@ -39,19 +39,23 @@
       render();
     }
     function clearChoice() { decision = null; pending = null; }
+    function ensureAnonymousBaseline() {
+      if (Store.readAnonymousSnapshot()) return true;
+      return Store.saveAnonymousSnapshot(JSON.stringify(AppCore.createInitialState()));
+    }
     function adoptAccount(state, syncMeta) {
       try {
-        if (!Store.owner()) Store.saveAnonymousSnapshot(Store.raw());
+        if (!ensureAnonymousBaseline()) throw new Error('Falha ao criar área local anônima.');
         Store.setOwner(userId);
         Store.saveUserSnapshot(userId);
-        if (syncMeta) patchMeta({ syncMeta });
+        if (syncMeta && !patchMeta({ syncMeta })) return false;
         return true;
       } catch (error) { console.error(error); setStatus('Erro de sincronização'); return false; }
     }
     function markSynced(row, state, syncMeta) {
       const normalized = Core.normalizeSyncMeta(syncMeta || row?.sync_meta || meta().syncMeta, state, row?.updated_at || Store.localUpdatedAt());
       if (!patchMeta({ cloudEnabled: true, remoteVersion: row?.version ?? null, lastSyncedHash: Core.hashState(state), lastSyncAt: row?.updated_at || new Date().toISOString(), syncMeta: normalized })) return;
-      adoptAccount(state, normalized);
+      if (!adoptAccount(state, normalized)) return;
       clearChoice();
       setStatus('Sincronizado');
     }
@@ -177,7 +181,7 @@
     }
 
     function schedule() { clearTimeout(timer); timer = setTimeout(() => { if (session && meta().cloudEnabled && !decision) reconcile(); }, 550); }
-    function armLocalOnly(kind) { localOnlyIntent = { kind, expiresAt: Date.now() + 120000 }; }
+    function armLocalOnly(kind) { localOnlyIntent = { kind, expiresAt: Date.now() + (kind === 'restore' ? 45000 : 120000) }; }
     function cancelLocalOnly() { localOnlyIntent = null; }
     function consumeLocalChange(nextState) {
       const now = new Date().toISOString();
