@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'motofinance-pro-v1-20260903';
+const CACHE_NAME = 'motofinance-pro-v1-20260903-r2';
 const APP_FILES = [
     './',
     './index.html',
@@ -27,6 +27,8 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
     if (event.request.method !== 'GET') return;
+    const requestUrl = new URL(event.request.url);
+    if (requestUrl.origin !== self.location.origin) return;
     event.respondWith(
         fetch(event.request)
             .then(response => {
@@ -36,6 +38,11 @@ self.addEventListener('fetch', event => {
                 }
                 return response;
             })
-            .catch(() => caches.match(event.request).then(response => response || caches.match('./index.html')))
+            .catch(async () => {
+                const cached = await caches.match(event.request);
+                if (cached) return cached;
+                if (event.request.mode === 'navigate') return caches.match('./index.html');
+                return new Response('Recurso indisponível offline.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+            })
     );
 });
