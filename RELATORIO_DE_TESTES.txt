@@ -1,0 +1,34 @@
+RELATÓRIO DE TESTES — MOTOFINANCE PRO v6.1
+Data: 03/09/2026
+
+VALIDAÇÕES EXECUTADAS
+- JavaScript validado com node --check: aprovado.
+- IDs do HTML verificados: 99 IDs, nenhum duplicado.
+- Todas as referências byId() do JavaScript existem no HTML: aprovado.
+- index.html referencia corretamente style.css e script.js.
+- Nenhuma dependência externa ou CDN.
+
+TESTES AUTOMATIZADOS — 18 GRUPOS
+- Combustível abatido do lucro diário e semanal.
+- Manutenção não abatida do lucro diário.
+- Manutenção abatida do lucro líquido mensal.
+- Outras correrias somadas ao fechamento mensal.
+- Separação de receitas iFood, 99 e outras correrias.
+- Filtros mensal, semanal e personalizado.
+- Filtro por tipo e origem.
+- Pesquisa por descrição e categoria.
+- Rejeição de registros inválidos.
+- Quilometragem e receita por km.
+- Metas abaixo, acima e sem valor definido.
+- Efeito financeiro de cada tipo de lançamento.
+- Validação de datas e ano bissexto.
+- Exibição correta de resultados negativos e prejuízos.
+- Rejeição de meses inexistentes.
+- Validação real da semana 53 no calendário ISO.
+- Rejeição de período personalizado invertido ou inválido.
+
+RESULTADO
+18 grupos de testes concluídos com sucesso.
+
+OBSERVAÇÃO
+Os testes de navegador citados no relatório da versão anterior não vieram no arquivo original e, por isso, não foram contabilizados como reexecutados nesta versão.
