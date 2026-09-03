@@ -1,0 +1,71 @@
+MOTOFINANCE PRO v6.1
+==================
+
+CORREÇÕES DESTA VERSÃO
+- Prejuízos agora aparecem com valor negativo, em vez de R$ 0,00.
+- Gráfico e lista de lançamentos adaptados para telas de celular.
+- Validação reforçada para mês, semana e período personalizado.
+- Restauração de backup avisa quando o navegador não consegue salvar.
+- Backups com identificadores duplicados são rejeitados para evitar alterações indevidas.
+- A tecla Escape fecha apenas a janela que estiver por cima.
+
+COMO ABRIR
+1. Extraia todos os arquivos da pasta.
+2. Mantenha index.html, style.css e script.js juntos.
+3. Abra o arquivo index.html no Google Chrome, Edge ou Firefox.
+
+O SISTEMA INICIA VAZIO
+Nenhum lançamento de exemplo foi incluído. Você poderá preencher seus próprios dados.
+
+REGRAS DOS CÁLCULOS
+- Lucro diário e semanal = receitas - combustível.
+- A manutenção NÃO reduz o lucro diário nem o semanal.
+- Lucro líquido mensal = receitas - combustível - manutenção.
+- Receitas de outras correrias entram normalmente na receita e no fechamento mensal.
+
+LANÇAMENTO DE UM ITEM POR VEZ
+Tipos disponíveis:
+- Receita
+- Combustível
+- Manutenção
+- Quilometragem
+
+O Enter não salva. Ele apenas avança pelos campos. Para gravar:
+1. Clique em "Revisar lançamento".
+2. Confira o resumo.
+3. Clique em "Confirmar e salvar".
+
+ORIGENS DE RECEITA
+- iFood
+- 99
+- Outras correrias
+
+CATEGORIAS SUGERIDAS PARA OUTRAS CORRERIAS
+- Entrega particular
+- Frete / serviço
+- Corrida particular
+- Diária / parceria
+- Gorjeta
+- Reembolso
+- Outros
+
+FILTROS
+- Por mês
+- Por semana
+- Período personalizado
+- Todos os lançamentos
+- Por tipo
+- Por origem
+- Pesquisa por descrição ou categoria
+
+METAS
+Use o botão "Metas" no menu lateral para cadastrar:
+- Meta semanal
+- Meta mensal
+
+BACKUP
+Use "Backup" para exportar os dados em JSON. Use "Restaurar" para importar o arquivo novamente.
+Também é possível exportar o período filtrado em CSV.
+
+ARMAZENAMENTO
+Os dados são salvos no armazenamento local do navegador. Se o navegador bloquear esse recurso, o sistema avisará e manterá os dados apenas durante a sessão. Nesse caso, exporte um backup JSON antes de fechar a página.
