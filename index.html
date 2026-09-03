@@ -1,422 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">
-    <title>MotoFinance PRO v6.1</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#f7c600">
+    <meta name="description" content="Finanças, veículos e manutenção em um só lugar.">
+    <title>MotoFinance PRO</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="mobileOverlay" class="overlay hidden" aria-hidden="true"></div>
+    <svg class="svg-sprite" aria-hidden="true">
+        <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></symbol>
+        <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 19V9m6 10V5m6 14v-7m4 7H2"/></symbol>
+        <symbol id="i-vehicle" viewBox="0 0 24 24"><path d="M5 17h14l-1-6-2-3H8l-2 3-1 6Zm0 0v2m14-2v2M7 13h.01M17 13h.01"/></symbol>
+        <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></symbol>
+        <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M3 6a2 2 0 0 1 2-2h14v4H5a2 2 0 0 0 0 4h16v8H5a2 2 0 0 1-2-2V6Zm13 6h5v4h-5a2 2 0 0 1 0-4Z"/></symbol>
+        <symbol id="i-more" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+        <symbol id="i-fuel" viewBox="0 0 24 24"><path d="M6 22V4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v18M4 22h15M8 6h7v5H8Zm9 2h2l2 2v7a2 2 0 0 1-4 0v-3"/></symbol>
+        <symbol id="i-tools" viewBox="0 0 24 24"><path d="m14 7 3-3 3 3-3 3m-4-4 5 5M4 20l9-9m-7-7 3 3-2 2-3-3Z"/></symbol>
+        <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20 13 13 20l-9-9V4h7l9 9Z"/><path d="M8 8h.01"/></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22S20 18 20 10V4l-8-2-8 2v6c0 8 8 12 8 12Z"/><path d="m9 12 2 2 4-4"/></symbol>
+        <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 2v20l3-2 3 2 3-2 3 2V2l-3 2-3-2-3 2-3-2Zm3 7h6m-6 4h6"/></symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></symbol>
+        <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 18a8 8 0 1 1 16 0M12 18l4-6M7 14h.01M12 10h.01M17 14h.01"/></symbol>
+        <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 21h16"/></symbol>
+        <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V3m-5 5 5-5 5 5M4 21h16"/></symbol>
+        <symbol id="i-edit" viewBox="0 0 24 24"><path d="m4 20 4.5-1L20 7.5 16.5 4 5 15.5 4 20Zm10-14 3.5 3.5"/></symbol>
+        <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 3h6l1 4H8l1-4Zm-3 4 1 14h10l1-14M10 11v6m4-6v6"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+        <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    </svg>
 
-    <div class="app-shell">
-        <aside id="sidebar" class="sidebar" aria-label="Filtros e configurações">
-            <div class="brand">
-                <div class="brand-icon" aria-hidden="true">🏍️</div>
-                <div>
-                    <strong>MotoFinance</strong>
-                    <span>Controle profissional</span>
-                </div>
-            </div>
-
-            <section class="sidebar-section">
-                <div class="section-title">Filtrar relatório</div>
-
-                <label class="field">
-                    <span>Período</span>
-                    <select id="filtroPeriodo">
-                        <option value="MES">Por mês</option>
-                        <option value="SEMANA">Por semana</option>
-                        <option value="PERSONALIZADO">Período personalizado</option>
-                        <option value="TODOS">Todos os lançamentos</option>
-                    </select>
-                </label>
-
-                <label id="grupoFiltroMes" class="field">
-                    <span>Mês</span>
-                    <input id="filtroMes" type="month">
-                </label>
-
-                <label id="grupoFiltroSemana" class="field hidden">
-                    <span>Semana</span>
-                    <input id="filtroSemana" type="week">
-                </label>
-
-                <div id="grupoFiltroPersonalizado" class="grid-two hidden">
-                    <label class="field">
-                        <span>Data inicial</span>
-                        <input id="filtroInicio" type="date">
-                    </label>
-                    <label class="field">
-                        <span>Data final</span>
-                        <input id="filtroFim" type="date">
-                    </label>
-                </div>
-
-                <label class="field">
-                    <span>Tipo</span>
-                    <select id="filtroTipo">
-                        <option value="TODOS">Todos</option>
-                        <option value="RECEITA">Receitas</option>
-                        <option value="COMBUSTIVEL">Combustível</option>
-                        <option value="MANUTENCAO">Manutenção</option>
-                        <option value="KM">Quilometragem</option>
-                    </select>
-                </label>
-
-                <label class="field">
-                    <span>Origem da receita</span>
-                    <select id="filtroOrigem">
-                        <option value="TODOS">Todas</option>
-                        <option value="IFOOD">iFood</option>
-                        <option value="99">99</option>
-                        <option value="OUTRAS_CORRIDAS">Outras correrias</option>
-                    </select>
-                </label>
-
-                <label class="field">
-                    <span>Pesquisar</span>
-                    <input id="filtroPesquisa" type="search" placeholder="Descrição, categoria...">
-                </label>
-
-                <div class="filter-actions">
-                    <button id="btnAplicarFiltro" class="btn btn-primary" type="button">Aplicar filtro</button>
-                    <button id="btnLimparFiltro" class="btn btn-ghost" type="button">Limpar</button>
-                </div>
-            </section>
-
-            <section class="sidebar-section">
-                <div class="section-title">Configurações</div>
-                <button id="btnAbrirMetas" class="menu-button" type="button">
-                    <span>🎯</span>
-                    <span><strong>Metas</strong><small>Semanal e mensal</small></span>
-                </button>
-                <button id="btnExportarJSON" class="menu-button" type="button">
-                    <span>💾</span>
-                    <span><strong>Backup</strong><small>Exportar arquivo JSON</small></span>
-                </button>
-                <label class="menu-button file-button">
-                    <span>📥</span>
-                    <span><strong>Restaurar</strong><small>Importar backup JSON</small></span>
-                    <input id="inputImportarJSON" type="file" accept="application/json,.json">
-                </label>
-            </section>
-
-            <div class="sidebar-footer">
-                <span>Dados salvos neste navegador</span>
-                <span class="status-dot">●</span>
-            </div>
+    <div class="app-layout">
+        <aside class="desktop-sidebar">
+            <a class="brand" href="#home" data-nav="home"><span class="brand-mark">MF</span><span><strong>MotoFinance</strong><small>PRO • Versão 1</small></span></a>
+            <nav class="desktop-nav" aria-label="Navegação principal">
+                <button class="nav-item active" data-nav="home"><svg><use href="#i-home"/></svg><span>Início</span></button>
+                <button class="nav-item" data-nav="charts"><svg><use href="#i-chart"/></svg><span>Gráficos</span></button>
+                <button class="nav-item" data-nav="vehicles"><svg><use href="#i-vehicle"/></svg><span>Veículos</span></button>
+                <button class="nav-item" data-nav="alarms"><svg><use href="#i-bell"/></svg><span>Alarmes</span><b id="desktopAlarmCount">0</b></button>
+                <button class="nav-item" data-nav="transactions"><svg><use href="#i-wallet"/></svg><span>Movimentações</span></button>
+                <button class="nav-item" data-nav="more"><svg><use href="#i-more"/></svg><span>Mais</span></button>
+            </nav>
+            <div class="sidebar-note"><span></span> Dados salvos neste aparelho</div>
         </aside>
 
-        <div class="main-area">
-            <header class="topbar">
-                <div class="topbar-title">
-                    <button id="btnMenuMobile" class="icon-button mobile-only" type="button" aria-label="Abrir filtros">☰</button>
-                    <div>
-                        <h1>Controle Financeiro do Motoboy</h1>
-                        <p id="textoPeriodoAtivo">Carregando período...</p>
-                    </div>
-                </div>
-                <div class="topbar-actions">
-                    <button id="btnExportarCSV" class="btn btn-secondary" type="button">Exportar CSV</button>
-                    <button id="btnImprimir" class="btn btn-secondary" type="button">Imprimir</button>
-                    <button id="btnNovoLancamento" class="btn btn-primary" type="button">＋ Novo lançamento</button>
-                </div>
-            </header>
-
-            <main class="content">
-                <section class="rule-banner" aria-label="Regra de cálculo">
-                    <div>
-                        <strong>Lucro diário e semanal</strong>
-                        <span>Receitas − combustível</span>
-                    </div>
-                    <div class="rule-divider" aria-hidden="true"></div>
-                    <div>
-                        <strong>Lucro líquido mensal</strong>
-                        <span>Receitas − combustível − manutenção</span>
-                    </div>
+        <div class="app-main">
+            <header class="mobile-header"><div class="brand compact"><span class="brand-mark">MF</span><span><strong>MotoFinance</strong><small>PRO</small></span></div><button class="icon-btn" data-action="quick-add" aria-label="Novo lançamento"><svg><use href="#i-plus"/></svg></button></header>
+            <main id="pageRoot" tabindex="-1">
+                <section class="page active" data-page="home">
+                    <header class="welcome-row"><div><span class="eyebrow">Bem-vindo de volta</span><h1 id="welcomeName">Moisés</h1></div><button class="notification-btn" data-nav="alarms"><svg><use href="#i-bell"/></svg><span id="alarmDot"></span></button></header>
+                    <div class="filter-row"><label class="select-pill"><svg><use href="#i-calendar"/></svg><select id="homeMonth" aria-label="Mês"></select></label><label class="select-pill"><svg><use href="#i-vehicle"/></svg><select id="homeVehicle" aria-label="Veículo"></select></label></div>
+                    <section class="balance-card"><div class="balance-glow"></div><div class="balance-title"><span>Resultado do período</span><span id="balanceSignal" class="balance-signal">—</span></div><strong id="homeBalance">R$ 0,00</strong><p id="homeBalanceLabel">Mês atual</p><div class="balance-split"><div><span class="up">↑</span><small>Ganhos</small><b id="homeGains">R$ 0,00</b></div><div><span class="down">↓</span><small>Gastos</small><b id="homeExpenses">R$ 0,00</b></div></div></section>
+                    <section class="section-block quick-section"><div class="section-heading"><h2>Registrar</h2><div class="segmented"><button class="active" data-quick-type="expense">Gastos</button><button data-quick-type="gain">Ganhos</button></div></div><div id="quickCategories" class="quick-categories"></div><button class="quick-banner" data-action="quick-add"><span class="quick-bolt">＋</span><span><strong>Novo lançamento</strong><small>Registre ganho ou gasto rapidamente</small></span><svg><use href="#i-arrow"/></svg></button></section>
+                    <section class="section-block"><div class="section-heading"><h2>Resumo do mês</h2><button class="text-button" data-nav="charts">Ver detalhes</button></div><div id="insightCard" class="insight-card"></div><div class="home-grid"><button id="nextReminderCard" class="mini-card" data-nav="alarms"></button><button class="mini-card" data-nav="transactions"><span class="mini-icon neutral"><svg><use href="#i-receipt"/></svg></span><span><strong>Histórico</strong><small id="transactionCountText">Nenhum lançamento</small></span><svg class="chevron"><use href="#i-arrow"/></svg></button></div></section>
                 </section>
 
-                <section class="metrics-grid" aria-label="Indicadores financeiros">
-                    <article class="metric-card">
-                        <div class="metric-label">Receita do período</div>
-                        <div id="cardReceitaPeriodo" class="metric-value">R$ 0,00</div>
-                        <div id="cardReceitaDetalhe" class="metric-note">Sem lançamentos</div>
-                    </article>
-                    <article class="metric-card metric-positive">
-                        <div class="metric-label">Lucro operacional</div>
-                        <div id="cardLucroOperacional" class="metric-value">R$ 0,00</div>
-                        <div class="metric-note">Receita menos combustível</div>
-                    </article>
-                    <article class="metric-card metric-warning">
-                        <div class="metric-label">Combustível</div>
-                        <div id="cardCombustivel" class="metric-value">R$ 0,00</div>
-                        <div class="metric-note">Abatido no resultado diário</div>
-                    </article>
-                    <article class="metric-card metric-danger">
-                        <div class="metric-label">Manutenção</div>
-                        <div id="cardManutencao" class="metric-value">R$ 0,00</div>
-                        <div class="metric-note">Abatida somente no fechamento mensal</div>
-                    </article>
-                    <article class="metric-card">
-                        <div class="metric-label">Quilometragem</div>
-                        <div id="cardKm" class="metric-value">0 km</div>
-                        <div id="cardReceitaKm" class="metric-note">R$ 0,00 por km</div>
-                    </article>
-                    <article class="metric-card metric-net">
-                        <div class="metric-label">Lucro líquido mensal</div>
-                        <div id="cardLucroMensal" class="metric-value">R$ 0,00</div>
-                        <div id="cardMesReferencia" class="metric-note">Mês de referência</div>
-                    </article>
+                <section class="page" data-page="charts">
+                    <header class="page-header"><div><span class="eyebrow">Gráficos</span><h1>Visão detalhada</h1></div><button class="soft-btn" data-action="export-csv"><svg><use href="#i-download"/></svg> CSV</button></header>
+                    <div class="filter-row wide"><label class="select-pill"><svg><use href="#i-calendar"/></svg><select id="chartMonth"></select></label><label class="select-pill"><svg><use href="#i-vehicle"/></svg><select id="chartVehicle"></select></label></div>
+                    <div class="summary-grid"><article class="summary-card coral"><small>Gastos</small><strong id="chartExpenses">R$ 0,00</strong><span id="chartLargest">Maior categoria: —</span></article><article class="summary-card mint"><small>Ganhos</small><strong id="chartGains">R$ 0,00</strong><span id="chartAverage">Média por dia: R$ 0,00</span></article><article class="summary-card dark"><small>Resultado</small><strong id="chartBalance">R$ 0,00</strong><span id="chartMargin">Sem margem</span></article></div>
+                    <section class="surface"><div class="surface-header"><div><h2 id="categoryTitle">Gastos por categoria</h2><p>Valores do período selecionado</p></div><div class="segmented"><button class="active" data-chart-type="expense">Gastos</button><button data-chart-type="gain">Ganhos</button></div></div><div id="categoryChart" class="category-chart"></div></section>
                 </section>
 
-                <section class="goals-grid" aria-label="Metas">
-                    <article class="panel goal-card">
-                        <div class="panel-heading compact">
-                            <div>
-                                <h2>Meta semanal</h2>
-                                <p id="metaSemanalPeriodo">Semana atual</p>
-                            </div>
-                            <strong id="metaSemanalPercentual">0%</strong>
-                        </div>
-                        <div class="progress-track"><div id="barraMetaSemanal" class="progress-fill weekly"></div></div>
-                        <div class="goal-values">
-                            <span id="metaSemanalRealizado">R$ 0,00 realizado</span>
-                            <span id="metaSemanalObjetivo">Meta: R$ 0,00</span>
-                        </div>
-                    </article>
-                    <article class="panel goal-card">
-                        <div class="panel-heading compact">
-                            <div>
-                                <h2>Meta mensal</h2>
-                                <p id="metaMensalPeriodo">Mês atual</p>
-                            </div>
-                            <strong id="metaMensalPercentual">0%</strong>
-                        </div>
-                        <div class="progress-track"><div id="barraMetaMensal" class="progress-fill monthly"></div></div>
-                        <div class="goal-values">
-                            <span id="metaMensalRealizado">R$ 0,00 realizado</span>
-                            <span id="metaMensalObjetivo">Meta: R$ 0,00</span>
-                        </div>
-                    </article>
+                <section class="page" data-page="vehicles"><header class="page-header"><div><span class="eyebrow">Garagem</span><h1>Meus veículos</h1></div><button class="primary-btn compact-btn" data-action="add-vehicle"><svg><use href="#i-plus"/></svg> Adicionar</button></header><div id="vehicleList" class="vehicle-grid"></div></section>
+
+                <section class="page" data-page="alarms"><header class="page-header"><div><span class="eyebrow">Manutenção</span><h1>Alarmes</h1></div><button class="primary-btn compact-btn" data-action="add-reminder"><svg><use href="#i-plus"/></svg> Criar</button></header><label class="select-pill full-select"><svg><use href="#i-vehicle"/></svg><select id="alarmVehicle"></select></label><div id="alarmGroups" class="alarm-groups"></div></section>
+
+                <section class="page" data-page="transactions">
+                    <header class="page-header"><div><span class="eyebrow">Movimentações</span><h1>Histórico financeiro</h1></div><button class="primary-btn compact-btn" data-action="quick-add"><svg><use href="#i-plus"/></svg> Nova</button></header>
+                    <section class="surface filter-surface"><div class="filter-grid"><label><span>Mês</span><select id="transactionMonth"></select></label><label><span>Veículo</span><select id="transactionVehicle"></select></label><label><span>Tipo</span><select id="transactionType"><option value="all">Todos</option><option value="gain">Ganhos</option><option value="expense">Gastos</option></select></label><label class="search-field"><span>Pesquisar</span><div><svg><use href="#i-search"/></svg><input id="transactionSearch" type="search" placeholder="Descrição ou categoria"></div></label></div></section>
+                    <div id="transactionList" class="transaction-list"></div>
                 </section>
 
-                <section class="analytics-grid">
-                    <article class="panel chart-panel">
-                        <div class="panel-heading">
-                            <div>
-                                <h2>Receita e lucro operacional por dia</h2>
-                                <p>A manutenção não reduz o lucro diário</p>
-                            </div>
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="graficoDiario" width="900" height="320" aria-label="Gráfico diário"></canvas>
-                            <div id="graficoVazio" class="empty-chart hidden">Cadastre lançamentos para visualizar o gráfico.</div>
-                        </div>
-                    </article>
-                    <article class="panel source-panel">
-                        <div class="panel-heading">
-                            <div>
-                                <h2>Receitas por origem</h2>
-                                <p>Aplicativos e outras correrias</p>
-                            </div>
-                        </div>
-                        <div class="source-content">
-                            <div id="graficoOrigens" class="donut" aria-label="Distribuição das receitas"><span id="donutTotal">R$ 0</span></div>
-                            <div class="source-list">
-                                <div><span class="legend-dot ifood"></span><span>iFood</span><strong id="origemIfood">R$ 0,00</strong></div>
-                                <div><span class="legend-dot novenove"></span><span>99</span><strong id="origem99">R$ 0,00</strong></div>
-                                <div><span class="legend-dot extras"></span><span>Outras correrias</span><strong id="origemExtras">R$ 0,00</strong></div>
-                            </div>
-                        </div>
-                    </article>
-                </section>
-
-                <section class="panel">
-                    <div class="panel-heading table-heading">
-                        <div>
-                            <h2>Lançamentos</h2>
-                            <p>Um item por vez, com confirmação antes de salvar</p>
-                        </div>
-                        <span id="contadorLancamentos" class="badge">0 itens</span>
-                    </div>
-                    <div class="table-scroll">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Tipo</th>
-                                    <th>Origem / categoria</th>
-                                    <th>Descrição</th>
-                                    <th>Valor</th>
-                                    <th>Efeito diário</th>
-                                    <th>Efeito mensal</th>
-                                    <th class="actions-column">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="corpoTabela"></tbody>
-                        </table>
-                        <div id="estadoVazioTabela" class="empty-state">
-                            <strong>Nenhum lançamento encontrado</strong>
-                            <span>Use “Novo lançamento” para começar.</span>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="panel monthly-report">
-                    <div class="panel-heading">
-                        <div>
-                            <h2>Fechamento mensal</h2>
-                            <p id="tituloFechamentoMensal">Mês de referência</p>
-                        </div>
-                        <span class="badge badge-success">Regra mensal aplicada</span>
-                    </div>
-                    <div class="report-grid">
-                        <div><span>Receita iFood</span><strong id="relatorioIfood">R$ 0,00</strong></div>
-                        <div><span>Receita 99</span><strong id="relatorio99">R$ 0,00</strong></div>
-                        <div><span>Outras correrias</span><strong id="relatorioExtras">R$ 0,00</strong></div>
-                        <div><span>Receita total</span><strong id="relatorioReceita">R$ 0,00</strong></div>
-                        <div><span>Combustível</span><strong id="relatorioCombustivel">R$ 0,00</strong></div>
-                        <div><span>Manutenção</span><strong id="relatorioManutencao">R$ 0,00</strong></div>
-                        <div><span>Lucro operacional</span><strong id="relatorioOperacional">R$ 0,00</strong></div>
-                        <div class="report-highlight"><span>Lucro líquido mensal</span><strong id="relatorioLiquido">R$ 0,00</strong></div>
-                        <div><span>Dias trabalhados</span><strong id="relatorioDias">0</strong></div>
-                        <div><span>Quilômetros</span><strong id="relatorioKm">0 km</strong></div>
-                        <div><span>Receita por km</span><strong id="relatorioPorKm">R$ 0,00</strong></div>
-                        <div><span>Média por dia</span><strong id="relatorioMedia">R$ 0,00</strong></div>
-                    </div>
+                <section class="page" data-page="more">
+                    <header class="profile-header"><span class="eyebrow">Área pessoal</span><h1>Mais</h1><div class="profile-card"><div class="avatar">MM</div><div><strong id="profileName">Moisés</strong><span>MotoFinance PRO</span><small>Versão 1</small></div></div></header>
+                    <section class="settings-group"><h2>Dados</h2><button data-action="update-odometer"><span class="setting-icon mint"><svg><use href="#i-gauge"/></svg></span><span><strong>Registrar odômetro</strong><small>Atualize a quilometragem do veículo</small></span><svg><use href="#i-arrow"/></svg></button><button data-action="quick-add"><span class="setting-icon yellow"><svg><use href="#i-plus"/></svg></span><span><strong>Registro rápido</strong><small>Lançar ganhos e gastos</small></span><svg><use href="#i-arrow"/></svg></button></section>
+                    <section class="settings-group"><h2>Armazenamento</h2><button data-action="backup"><span class="setting-icon blue"><svg><use href="#i-download"/></svg></span><span><strong>Fazer backup</strong><small>Baixar todos os dados</small></span><svg><use href="#i-arrow"/></svg></button><label class="settings-file"><span class="setting-icon violet"><svg><use href="#i-upload"/></svg></span><span><strong>Restaurar backup</strong><small>Importar um arquivo salvo</small></span><svg><use href="#i-arrow"/></svg><input id="restoreInput" type="file" accept="application/json,.json"></label><button data-action="export-csv"><span class="setting-icon neutral"><svg><use href="#i-receipt"/></svg></span><span><strong>Exportar planilha</strong><small>Baixar movimentações em CSV</small></span><svg><use href="#i-arrow"/></svg></button></section>
+                    <section class="settings-group danger-zone"><h2>Conta</h2><button data-action="clear-data"><span class="setting-icon red"><svg><use href="#i-trash"/></svg></span><span><strong>Apagar dados deste aparelho</strong><small>Esta ação pede confirmação</small></span><svg><use href="#i-arrow"/></svg></button></section>
                 </section>
             </main>
         </div>
     </div>
 
-    <div id="modalLancamento" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tituloModalLancamento">
-        <div class="modal-card large">
-            <div class="modal-header">
-                <div>
-                    <h2 id="tituloModalLancamento">Novo lançamento</h2>
-                    <p>Cadastre somente um item por vez.</p>
-                </div>
-                <button id="btnFecharLancamento" class="icon-button" type="button" aria-label="Fechar">×</button>
-            </div>
+    <nav class="bottom-nav" aria-label="Navegação principal"><button class="active" data-nav="home"><svg><use href="#i-home"/></svg><span>Início</span></button><button data-nav="charts"><svg><use href="#i-chart"/></svg><span>Gráficos</span></button><button data-nav="vehicles"><svg><use href="#i-vehicle"/></svg><span>Veículos</span></button><button data-nav="alarms"><svg><use href="#i-bell"/></svg><span>Alarmes</span></button><button data-nav="transactions"><svg><use href="#i-wallet"/></svg><span>Histórico</span></button><button data-nav="more"><svg><use href="#i-more"/></svg><span>Mais</span></button></nav>
 
-            <form id="formLancamento" novalidate>
-                <input id="registroId" type="hidden">
+    <dialog id="transactionDialog" class="app-dialog bottom-sheet"><form id="transactionForm" method="dialog"><div class="dialog-handle"></div><header><div><span class="eyebrow">Movimentação</span><h2 id="transactionDialogTitle">Novo lançamento</h2></div><button type="button" class="icon-btn" data-close="transactionDialog"><svg><use href="#i-close"/></svg></button></header><input id="transactionId" type="hidden"><div class="segmented large"><button type="button" class="active" data-form-type="expense">Gasto</button><button type="button" data-form-type="gain">Ganho</button></div><input id="transactionFormType" type="hidden" value="expense"><div class="form-grid"><label><span>Categoria *</span><select id="transactionCategory" required></select></label><label><span>Valor *</span><div class="money-input"><b>R$</b><input id="transactionAmount" inputmode="decimal" placeholder="0,00" required></div></label><label><span>Data *</span><input id="transactionDate" type="date" required></label><label><span>Veículo *</span><select id="transactionVehicleId" required></select></label><label class="full"><span>Descrição</span><input id="transactionDescription" maxlength="160" placeholder="Ex.: abastecimento, corrida, revisão..."></label><label><span>Odômetro no momento</span><input id="transactionOdometer" type="number" min="0" step="1" placeholder="Opcional"></label></div><div class="dialog-actions"><button type="button" class="soft-btn" data-close="transactionDialog">Cancelar</button><button type="submit" class="primary-btn">Salvar lançamento</button></div></form></dialog>
 
-                <div class="info-box">
-                    Pressionar <strong>Enter não salva</strong>. O lançamento só será gravado após revisar e confirmar.
-                </div>
+    <dialog id="vehicleDialog" class="app-dialog"><form id="vehicleForm" method="dialog"><header><div><span class="eyebrow">Garagem</span><h2 id="vehicleDialogTitle">Adicionar veículo</h2></div><button type="button" class="icon-btn" data-close="vehicleDialog"><svg><use href="#i-close"/></svg></button></header><input id="vehicleId" type="hidden"><div class="form-grid"><label><span>Tipo</span><select id="vehicleType"><option value="moto">Moto</option><option value="carro">Carro</option><option value="outro">Outro</option></select></label><label><span>Placa</span><input id="vehiclePlate" maxlength="7" placeholder="ABC1D23"></label><label><span>Marca *</span><input id="vehicleBrand" required placeholder="Honda"></label><label><span>Modelo *</span><input id="vehicleModel" required placeholder="CG 150 Titan"></label><label><span>Ano *</span><input id="vehicleYear" type="number" min="1900" max="2100" required></label><label><span>Combustível</span><select id="vehicleFuel"><option>Gasolina</option><option>Etanol</option><option>Flex</option><option>Diesel</option><option>Elétrico</option><option>Outro</option></select></label><label class="full"><span>Odômetro atual (km)</span><input id="vehicleOdometer" type="number" min="0" step="1" value="0"></label></div><div class="dialog-actions"><button type="button" class="soft-btn" data-close="vehicleDialog">Cancelar</button><button type="submit" class="primary-btn">Salvar veículo</button></div></form></dialog>
 
-                <div class="form-grid">
-                    <label class="field">
-                        <span>Data *</span>
-                        <input id="inputData" type="date" required>
-                    </label>
-                    <label class="field">
-                        <span>Tipo do item *</span>
-                        <select id="inputTipo" required>
-                            <option value="RECEITA">Receita</option>
-                            <option value="COMBUSTIVEL">Combustível</option>
-                            <option value="MANUTENCAO">Manutenção</option>
-                            <option value="KM">Quilometragem</option>
-                        </select>
-                    </label>
-                </div>
+    <dialog id="reminderDialog" class="app-dialog"><form id="reminderForm" method="dialog"><header><div><span class="eyebrow">Manutenção</span><h2 id="reminderDialogTitle">Configurar alarme</h2></div><button type="button" class="icon-btn" data-close="reminderDialog"><svg><use href="#i-close"/></svg></button></header><input id="reminderId" type="hidden"><div class="form-grid"><label class="full"><span>Nome *</span><input id="reminderTitle" required maxlength="80" placeholder="Ex.: Troca de óleo"></label><label class="full"><span>Veículo *</span><select id="reminderVehicleId" required></select></label></div><div class="reminder-method"><label class="switch-row"><span><strong>Por quilometragem</strong><small>Avisar a cada quantidade de km</small></span><input id="reminderByKm" type="checkbox" role="switch"></label><div id="kmFields" class="form-grid"><label><span>Intervalo em km</span><input id="reminderKmInterval" type="number" min="1" step="1" value="1000"></label><label><span>Último odômetro</span><input id="reminderLastKm" type="number" min="0" step="1" value="0"></label><label><span>Avisar antes (km)</span><input id="reminderAdvanceKm" type="number" min="0" step="1" value="200"></label></div></div><div class="reminder-method"><label class="switch-row"><span><strong>Por tempo</strong><small>Avisar após determinado número de dias</small></span><input id="reminderByTime" type="checkbox" role="switch"></label><div id="timeFields" class="form-grid"><label><span>Intervalo em dias</span><input id="reminderDayInterval" type="number" min="1" step="1" value="180"></label><label><span>Última execução</span><input id="reminderLastDate" type="date"></label><label><span>Avisar antes (dias)</span><input id="reminderAdvanceDays" type="number" min="0" step="1" value="3"></label></div></div><div class="dialog-actions"><button type="button" class="soft-btn" data-close="reminderDialog">Cancelar</button><button type="submit" class="primary-btn">Salvar alarme</button></div></form></dialog>
 
-                <div id="grupoReceita" class="form-grid">
-                    <label class="field">
-                        <span>Origem da receita *</span>
-                        <select id="inputOrigem">
-                            <option value="IFOOD">iFood</option>
-                            <option value="99">99</option>
-                            <option value="OUTRAS_CORRIDAS">Outras correrias</option>
-                        </select>
-                    </label>
-                    <label id="grupoCategoriaExtra" class="field hidden">
-                        <span>Categoria da correria *</span>
-                        <select id="inputCategoriaExtra">
-                            <option value="ENTREGA_PARTICULAR">Entrega particular</option>
-                            <option value="FRETE_SERVICO">Frete / serviço</option>
-                            <option value="CORRIDA_PARTICULAR">Corrida particular</option>
-                            <option value="DIARIA_PARCERIA">Diária / parceria</option>
-                            <option value="GORJETA">Gorjeta</option>
-                            <option value="REEMBOLSO">Reembolso</option>
-                            <option value="OUTROS">Outros</option>
-                        </select>
-                    </label>
-                </div>
-
-                <label id="grupoValor" class="field">
-                    <span id="labelValor">Valor (R$) *</span>
-                    <input id="inputValor" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0,00">
-                </label>
-
-                <label id="grupoKm" class="field hidden">
-                    <span>Quilômetros rodados *</span>
-                    <input id="inputKm" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="0">
-                </label>
-
-                <label class="field">
-                    <span>Descrição / observação</span>
-                    <input id="inputDescricao" type="text" maxlength="180" placeholder="Ex.: turno da noite, troca de óleo, abastecimento...">
-                </label>
-
-                <div id="previewLancamento" class="preview-box">Preencha os dados para revisar.</div>
-
-                <div class="modal-actions">
-                    <button id="btnCancelarLancamento" class="btn btn-ghost" type="button">Cancelar</button>
-                    <button id="btnRevisarLancamento" class="btn btn-primary" type="button">Revisar lançamento</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="modalConfirmacao" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tituloConfirmacao">
-        <div class="modal-card">
-            <div class="modal-header">
-                <div>
-                    <h2 id="tituloConfirmacao">Confirmar lançamento</h2>
-                    <p>Confira os dados antes de gravar.</p>
-                </div>
-                <button id="btnFecharConfirmacao" class="icon-button" type="button" aria-label="Fechar">×</button>
-            </div>
-            <div id="resumoConfirmacao" class="confirmation-summary"></div>
-            <div class="modal-actions">
-                <button id="btnVoltarEdicao" class="btn btn-ghost" type="button">Voltar e editar</button>
-                <button id="btnSalvarConfirmado" class="btn btn-success" type="button">Confirmar e salvar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalMetas" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tituloModalMetas">
-        <div class="modal-card">
-            <div class="modal-header">
-                <div>
-                    <h2 id="tituloModalMetas">Configurar metas</h2>
-                    <p>As metas consideram a receita bruta.</p>
-                </div>
-                <button id="btnFecharMetas" class="icon-button" type="button" aria-label="Fechar">×</button>
-            </div>
-            <div class="form-grid one-column">
-                <label class="field">
-                    <span>Meta semanal (R$)</span>
-                    <input id="inputMetaSemanal" type="number" min="0" step="0.01" inputmode="decimal">
-                </label>
-                <label class="field">
-                    <span>Meta mensal (R$)</span>
-                    <input id="inputMetaMensal" type="number" min="0" step="0.01" inputmode="decimal">
-                </label>
-            </div>
-            <div class="modal-actions">
-                <button id="btnCancelarMetas" class="btn btn-ghost" type="button">Cancelar</button>
-                <button id="btnSalvarMetas" class="btn btn-primary" type="button">Salvar metas</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
-
-    <script src="script.js"></script>
+    <dialog id="confirmDialog" class="app-dialog confirm-dialog"><div><span class="confirm-icon"><svg><use href="#i-trash"/></svg></span><h2 id="confirmTitle">Confirmar ação</h2><p id="confirmText"></p><div class="dialog-actions"><button id="confirmCancel" class="soft-btn">Cancelar</button><button id="confirmAccept" class="danger-btn">Confirmar</button></div></div></dialog>
+    <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+    <script src="core.js"></script><script src="script.js"></script>
 </body>
 </html>

@@ -1,205 +1,119 @@
 'use strict';
-const assert = require('assert');
-const core = require('../script.js');
 
-function record(overrides) {
-  return {
-    id: Math.random().toString(16),
-    date: '2026-08-05',
-    type: 'RECEITA',
-    source: 'IFOOD',
-    extraCategory: '',
-    amount: 100,
-    km: 0,
-    description: '',
-    createdAt: '2026-08-05T12:00:00.000Z',
-    ...overrides
-  };
+const assert = require('node:assert/strict');
+const Core = require('../core.js');
+
+let passed = 0;
+function test(name, fn) {
+    try { fn(); passed += 1; console.log('✓', name); }
+    catch (error) { console.error('✗', name); throw error; }
 }
 
-// 1. Regra diária: manutenção não é abatida; combustível é.
-{
-  const list = [
-    record({ amount: 200 }),
-    record({ type: 'COMBUSTIVEL', source: '', amount: 40 }),
-    record({ type: 'MANUTENCAO', source: '', amount: 70 })
-  ];
-  const totals = core.calculateTotals(list);
-  assert.strictEqual(totals.revenue, 200);
-  assert.strictEqual(totals.operationalProfit, 160);
-  assert.strictEqual(totals.monthlyNetProfit, 90);
-  const daily = core.aggregateByDay(list)[0];
-  assert.strictEqual(daily.dailyProfit, 160);
-  assert.strictEqual(daily.maintenance, 70);
-}
+const vehicle = Core.sanitizeVehicle({ id: 'moto', brand: 'Honda', model: 'CG 150', year: 2008, odometer: 12500 });
+const transactions = [
+    Core.sanitizeTransaction({ id: 'a', vehicleId: 'moto', type: 'gain', category: 'entrega', amount: 150, date: '2026-09-01', description: 'iFood' }, [vehicle]),
+    Core.sanitizeTransaction({ id: 'b', vehicleId: 'moto', type: 'gain', category: 'corrida', amount: 80, date: '2026-09-02', description: '99' }, [vehicle]),
+    Core.sanitizeTransaction({ id: 'c', vehicleId: 'moto', type: 'expense', category: 'combustivel', amount: 50, date: '2026-09-02' }, [vehicle]),
+    Core.sanitizeTransaction({ id: 'd', vehicleId: 'moto', type: 'expense', category: 'manutencao', amount: 250, date: '2026-08-30' }, [vehicle])
+];
 
-// 2. Outras correrias entram na receita e no fechamento mensal.
-{
-  const list = [
-    record({ source: 'OUTRAS_CORRIDAS', extraCategory: 'ENTREGA_PARTICULAR', amount: 150 })
-  ];
-  const totals = core.calculateTotals(list);
-  assert.strictEqual(totals.extraRuns, 150);
-  assert.strictEqual(totals.revenue, 150);
-  assert.strictEqual(totals.monthlyNetProfit, 150);
-}
+test('valida datas reais', () => {
+    assert.equal(Core.validDate('2026-09-03'), true);
+    assert.equal(Core.validDate('2026-02-31'), false);
+    assert.equal(Core.validDate('03/09/2026'), false);
+});
 
-// 3. Separação por origem.
-{
-  const list = [
-    record({ source: 'IFOOD', amount: 100 }),
-    record({ source: '99', amount: 80 }),
-    record({ source: 'OUTRAS_CORRIDAS', extraCategory: 'GORJETA', amount: 20 })
-  ];
-  const totals = core.calculateTotals(list);
-  assert.deepStrictEqual([totals.ifood, totals.ninetyNine, totals.extraRuns, totals.revenue], [100, 80, 20, 200]);
-}
+test('formata moeda brasileira e preserva negativos', () => {
+    assert.match(Core.money(-20), /-R\$\s20,00|−R\$\s20,00/);
+    assert.match(Core.money(1234.5), /1\.234,50/);
+});
 
-// 4. Semana ISO conhecida: 2026-W32 = 03/08 a 09/08.
-{
-  const range = core.isoWeekRange('2026-W32');
-  assert.deepStrictEqual(range, { start: '2026-08-03', end: '2026-08-09' });
-  const list = [
-    record({ date: '2026-08-02', amount: 1 }),
-    record({ date: '2026-08-03', amount: 2 }),
-    record({ date: '2026-08-09', amount: 3 }),
-    record({ date: '2026-08-10', amount: 4 })
-  ];
-  assert.deepStrictEqual(core.weekRecords(list, '2026-W32').map(r => r.amount), [2, 3]);
-}
+test('sanitiza veículo e placa', () => {
+    assert.equal(vehicle.plate, '');
+    const item = Core.sanitizeVehicle({ brand: 'Yamaha', model: 'Factor', plate: 'abc-1d23', year: 2020 });
+    assert.equal(item.plate, 'ABC1D23');
+});
 
-// 5. Filtro mensal.
-{
-  const list = [
-    record({ date: '2026-07-31', amount: 1 }),
-    record({ date: '2026-08-01', amount: 2 }),
-    record({ date: '2026-08-31', amount: 3 }),
-    record({ date: '2026-09-01', amount: 4 })
-  ];
-  const filtered = core.filterRecords(list, { mode: 'MES', month: '2026-08', type: 'TODOS', source: 'TODOS' });
-  assert.deepStrictEqual(filtered.map(r => r.amount), [2, 3]);
-}
+test('rejeita veículo sem marca ou modelo', () => {
+    assert.equal(Core.sanitizeVehicle({ brand: '', model: 'CG' }), null);
+    assert.equal(Core.sanitizeVehicle({ brand: 'Honda', model: '' }), null);
+});
 
-// 6. Filtro semanal.
-{
-  const list = [
-    record({ date: '2026-08-02', amount: 1 }),
-    record({ date: '2026-08-03', amount: 2 }),
-    record({ date: '2026-08-09', amount: 3 }),
-    record({ date: '2026-08-10', amount: 4 })
-  ];
-  const filtered = core.filterRecords(list, { mode: 'SEMANA', week: '2026-W32', type: 'TODOS', source: 'TODOS' });
-  assert.deepStrictEqual(filtered.map(r => r.amount), [2, 3]);
-}
+test('sanitiza ganho válido', () => {
+    assert.equal(transactions[0].amount, 150);
+    assert.equal(transactions[0].type, 'gain');
+});
 
-// 7. Filtro personalizado e limites inclusivos.
-{
-  const list = [
-    record({ date: '2026-08-04', amount: 1 }),
-    record({ date: '2026-08-05', amount: 2 }),
-    record({ date: '2026-08-06', amount: 3 })
-  ];
-  const filtered = core.filterRecords(list, { mode: 'PERSONALIZADO', start: '2026-08-05', end: '2026-08-06', type: 'TODOS', source: 'TODOS' });
-  assert.deepStrictEqual(filtered.map(r => r.amount), [2, 3]);
-}
+test('rejeita categoria incompatível', () => {
+    assert.equal(Core.sanitizeTransaction({ vehicleId: 'moto', type: 'gain', category: 'combustivel', amount: 10, date: '2026-09-01' }, [vehicle]), null);
+});
 
-// 8. Filtro por tipo e origem.
-{
-  const list = [
-    record({ source: 'IFOOD', amount: 100 }),
-    record({ source: '99', amount: 80 }),
-    record({ type: 'COMBUSTIVEL', source: '', amount: 20 })
-  ];
-  assert.strictEqual(core.filterRecords(list, { mode: 'TODOS', type: 'RECEITA', source: '99' }).length, 1);
-  assert.strictEqual(core.filterRecords(list, { mode: 'TODOS', type: 'COMBUSTIVEL', source: 'TODOS' }).length, 1);
-}
+test('rejeita valor zero ou negativo', () => {
+    assert.equal(Core.sanitizeTransaction({ vehicleId: 'moto', type: 'expense', category: 'combustivel', amount: 0, date: '2026-09-01' }, [vehicle]), null);
+    assert.equal(Core.sanitizeTransaction({ vehicleId: 'moto', type: 'expense', category: 'combustivel', amount: -1, date: '2026-09-01' }, [vehicle]), null);
+});
 
-// 9. Pesquisa por descrição e categoria.
-{
-  const list = [
-    record({ description: 'Entrega para farmácia', source: 'OUTRAS_CORRIDAS', extraCategory: 'ENTREGA_PARTICULAR' }),
-    record({ description: 'Turno normal', source: 'IFOOD' })
-  ];
-  assert.strictEqual(core.filterRecords(list, { mode: 'TODOS', type: 'TODOS', source: 'TODOS', search: 'farmácia' }).length, 1);
-  assert.strictEqual(core.filterRecords(list, { mode: 'TODOS', type: 'TODOS', source: 'TODOS', search: 'particular' }).length, 1);
-}
+test('calcula ganhos, gastos e resultado', () => {
+    const totals = Core.calculateTotals(transactions);
+    assert.equal(totals.gains, 230);
+    assert.equal(totals.expenses, 300);
+    assert.equal(totals.balance, -70);
+});
 
-// 10. Sanitização rejeita registros inválidos.
-{
-  assert.strictEqual(core.sanitizeRecord({}), null);
-  assert.strictEqual(core.sanitizeRecord(record({ amount: 0 })), null);
-  assert.strictEqual(core.sanitizeRecord(record({ source: 'OUTRAS_CORRIDAS', extraCategory: '' })), null);
-  assert.ok(core.sanitizeRecord(record({ source: 'OUTRAS_CORRIDAS', extraCategory: 'FRETE_SERVICO', amount: 50 })));
-}
+test('filtra por mês', () => {
+    assert.equal(Core.filterTransactions(transactions, { month: '2026-09' }).length, 3);
+    assert.equal(Core.filterTransactions(transactions, { month: '2026-08' }).length, 1);
+});
 
-// 11. Quilometragem e receita por km.
-{
-  const list = [
-    record({ amount: 200 }),
-    record({ type: 'KM', source: '', amount: 0, km: 100 })
-  ];
-  const totals = core.calculateTotals(list);
-  assert.strictEqual(totals.km, 100);
-  assert.strictEqual(totals.revenuePerKm, 2);
-  assert.strictEqual(totals.workedDays, 1);
-}
+test('filtra por tipo', () => {
+    assert.equal(Core.filterTransactions(transactions, { type: 'gain' }).length, 2);
+    assert.equal(Core.filterTransactions(transactions, { type: 'expense' }).length, 2);
+});
 
-// 12. Metas podem ultrapassar 100% sem erro matemático.
-{
-  assert.strictEqual(core.goalProgress(500, 1000), 50);
-  assert.strictEqual(core.goalProgress(1200, 1000), 120);
-  assert.strictEqual(core.goalProgress(100, 0), 0);
-}
+test('pesquisa descrição e categoria sem diferenciar maiúsculas', () => {
+    assert.equal(Core.filterTransactions(transactions, { query: 'IFOOD' }).length, 1);
+    assert.equal(Core.filterTransactions(transactions, { query: 'combustível' }).length, 1);
+});
 
-// 13. Efeito financeiro de cada tipo.
-{
-  assert.ok(core.getDailyEffect(record({ type: 'MANUTENCAO', source: '', amount: 50 })).text.includes('Somente mensal'));
-  assert.ok(core.getDailyEffect(record({ type: 'COMBUSTIVEL', source: '', amount: 50 })).text.includes('−'));
-  assert.ok(core.getMonthlyEffect(record({ type: 'MANUTENCAO', source: '', amount: 50 })).text.includes('−'));
-}
+test('soma valores por categoria', () => {
+    const categories = Core.totalsByCategory(transactions, 'expense');
+    assert.equal(categories.find(item => item.key === 'manutencao').value, 250);
+    assert.equal(categories[0].key, 'manutencao');
+});
 
-// 14. Validação de datas reais.
-{
-  assert.strictEqual(core.isValidISODate('2026-02-29'), false);
-  assert.strictEqual(core.isValidISODate('2028-02-29'), true);
-  assert.strictEqual(core.isValidISODate('2026-08-05'), true);
-}
+test('calcula data futura sem depender de UTC', () => {
+    assert.equal(Core.addDays('2026-09-03', 15), '2026-09-18');
+    assert.equal(Core.daysBetween('2026-09-03', '2026-09-18'), 15);
+});
 
-// 15. Prejuízos continuam negativos na apresentação.
-{
-  const list = [
-    record({ amount: 50 }),
-    record({ type: 'COMBUSTIVEL', source: '', amount: 100 }),
-    record({ type: 'MANUTENCAO', source: '', amount: 20 })
-  ];
-  const totals = core.calculateTotals(list);
-  assert.strictEqual(totals.operationalProfit, -50);
-  assert.strictEqual(totals.monthlyNetProfit, -70);
-  assert.ok(core.formatMoney(totals.monthlyNetProfit).includes('-'));
-  assert.ok(core.formatMoney(totals.monthlyNetProfit).includes('70,00'));
-  assert.strictEqual(core.formatCompactMoney(-1500), '−R$ 1,5 mil');
-}
+test('classifica alarme em dia', () => {
+    const reminder = Core.sanitizeReminder({ vehicleId: 'moto', title: 'Óleo', enabled: true, byKm: true, kmInterval: 1000, lastKm: 12500, advanceKm: 200, lastDate: '2026-09-03' }, [vehicle]);
+    assert.equal(Core.reminderStatus(reminder, vehicle, '2026-09-03').key, 'ok');
+});
 
-// 16. Meses inexistentes não podem abrir períodos de outro ano.
-{
-  assert.strictEqual(core.isValidMonthValue('2026-12'), true);
-  assert.strictEqual(core.isValidMonthValue('2026-00'), false);
-  assert.strictEqual(core.isValidMonthValue('2026-13'), false);
-  const list = [record({ date: '2027-01-15' })];
-  assert.strictEqual(core.filterRecords(list, { mode: 'MES', month: '2026-13', type: 'TODOS', source: 'TODOS' }).length, 0);
-}
+test('classifica alarme próximo', () => {
+    const reminder = Core.sanitizeReminder({ vehicleId: 'moto', title: 'Óleo', enabled: true, byKm: true, kmInterval: 1000, lastKm: 11600, advanceKm: 200, lastDate: '2026-09-03' }, [vehicle]);
+    assert.equal(Core.reminderStatus(reminder, vehicle, '2026-09-03').key, 'upcoming');
+});
 
-// 17. A semana 53 só existe nos anos corretos do calendário ISO.
-{
-  assert.strictEqual(core.isoWeekRange('2025-W53'), null);
-  assert.deepStrictEqual(core.isoWeekRange('2026-W53'), { start: '2026-12-28', end: '2027-01-03' });
-}
+test('não chama zero restante de atrasado', () => {
+    const reminder = Core.sanitizeReminder({ vehicleId: 'moto', title: 'Óleo', enabled: true, byKm: true, kmInterval: 500, lastKm: 12000, advanceKm: 200, lastDate: '2026-09-03' }, [vehicle]);
+    const status = Core.reminderStatus(reminder, vehicle, '2026-09-03');
+    assert.equal(status.key, 'upcoming');
+    assert.match(status.detail, /0 km restantes/);
+});
 
-// 18. Período personalizado invertido ou inválido retorna vazio.
-{
-  const list = [record({ date: '2026-08-05' })];
-  assert.strictEqual(core.filterRecords(list, { mode: 'PERSONALIZADO', start: '2026-08-06', end: '2026-08-05', type: 'TODOS', source: 'TODOS' }).length, 0);
-  assert.strictEqual(core.filterRecords(list, { mode: 'PERSONALIZADO', start: '2026-02-30', end: '', type: 'TODOS', source: 'TODOS' }).length, 0);
-}
+test('classifica alarme atrasado', () => {
+    const reminder = Core.sanitizeReminder({ vehicleId: 'moto', title: 'Óleo', enabled: true, byKm: true, kmInterval: 500, lastKm: 11000, advanceKm: 200, lastDate: '2026-09-03' }, [vehicle]);
+    assert.equal(Core.reminderStatus(reminder, vehicle, '2026-09-03').key, 'overdue');
+});
 
-console.log('18 grupos de testes concluídos com sucesso.');
+test('cria estado inicial completo', () => {
+    const state = Core.createInitialState();
+    assert.equal(state.version, 1);
+    assert.equal(state.vehicles.length, 1);
+    assert.equal(state.reminders.length, Core.REMINDER_TEMPLATES.length);
+    assert.equal(state.profile.name, 'Moisés');
+});
+
+console.log('\n' + passed + ' testes concluídos com sucesso.');

@@ -1,23 +1,30 @@
-# MotoFinance PRO v6.1
+# MotoFinance PRO — Versão 1
 
-Controle financeiro local para registrar receitas, combustível, manutenção e quilometragem de serviços como motoboy.
+Aplicativo PWA para controlar ganhos, gastos, veículos, odômetro e lembretes de manutenção. A interface é responsiva e funciona em celular e notebook.
 
-## Como abrir
+## Recursos
 
-Mantenha `index.html`, `style.css` e `script.js` na mesma pasta e abra o `index.html` no Chrome, Edge ou Firefox.
+- Painel mensal com ganhos, gastos e resultado real, inclusive negativo.
+- Categorias para corridas, entregas, fretes, combustível, manutenção, impostos e outros.
+- Cadastro e seleção de vários veículos.
+- Odômetro atualizado pelo veículo ou durante um lançamento.
+- Alarmes por quilometragem, tempo ou ambos.
+- Gráficos por categoria, mês e veículo.
+- Pesquisa e filtros no histórico financeiro.
+- Backup JSON, restauração e exportação CSV.
+- Funcionamento offline após o primeiro acesso.
+- Importação automática dos lançamentos salvos na versão anterior.
 
-## Regras dos cálculos
+## Dados
 
-- Lucro diário e semanal: receitas menos combustível.
-- Lucro líquido mensal: receitas menos combustível e manutenção.
-- Receitas de outras correrias entram normalmente no fechamento.
-
-## Dados e backup
-
-Os dados ficam salvos no navegador usado. Faça backups periódicos pelo botão **Backup**. A limpeza dos dados do navegador pode apagar lançamentos que não tenham sido exportados.
+Os dados ficam no navegador de cada aparelho. Para levar os dados do celular ao notebook, faça um backup no primeiro aparelho e use **Restaurar backup** no segundo.
 
 ## Testes
 
-Execute `node tests/test_core.js` para conferir os 18 grupos de testes automatizados.
+Execute:
 
-Consulte também `LEIA-ME.txt` e `RELATORIO_DE_TESTES.txt`.
+```bash
+node tests/test_core.js
+```
+
+O conjunto cobre validação, cálculos financeiros, filtros, categorias e estados dos alarmes.
