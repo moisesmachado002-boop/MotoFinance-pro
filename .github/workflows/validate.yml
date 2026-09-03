@@ -2,6 +2,7 @@ name: Validate MotoFinance PRO
 
 on:
   push:
+  pull_request:
 
 permissions:
   contents: read
@@ -11,7 +12,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+      - name: Node 24
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: ''
+      - name: Syntax checks
+        run: |
+          node --check core.js
+          node --check script.js
+          node --check preflight.js
+          node --check app-enhancements.js
+          node --check sync-config.js
+          node --check sync-core.js
+          node --check sync-storage.js
+          node --check sync-ui.js
+          node --check sync-engine.js
+          node --check sync.js
+          node --check auth.js
+          node --check service-worker.js
       - name: Core tests
         run: node tests/test_core.js
       - name: Static PWA tests
