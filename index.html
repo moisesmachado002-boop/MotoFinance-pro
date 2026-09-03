@@ -93,7 +93,7 @@
                     <section class="settings-group"><h2>Dados</h2><button data-action="update-odometer"><span class="setting-icon mint"><svg><use href="#i-gauge"/></svg></span><span><strong>Registrar odômetro</strong><small>Atualize a quilometragem do veículo</small></span><svg><use href="#i-arrow"/></svg></button><button data-action="quick-add"><span class="setting-icon yellow"><svg><use href="#i-plus"/></svg></span><span><strong>Registro rápido</strong><small>Lançar ganhos e gastos</small></span><svg><use href="#i-arrow"/></svg></button></section>
                     <section class="settings-group goals-group"><h2>Metas de ganhos</h2><form id="goalsForm" class="surface goal-form"><label><span>Meta semanal (R$)</span><input id="weeklyGoal" inputmode="decimal" placeholder="0,00"></label><label><span>Meta mensal (R$)</span><input id="monthlyGoal" inputmode="decimal" placeholder="0,00"></label><button class="primary-btn" type="submit">Salvar metas</button></form></section>
                     <section class="settings-group"><h2>Armazenamento</h2><button data-action="backup"><span class="setting-icon blue"><svg><use href="#i-download"/></svg></span><span><strong>Fazer backup</strong><small>Baixar todos os dados</small></span><svg><use href="#i-arrow"/></svg></button><label class="settings-file"><span class="setting-icon violet"><svg><use href="#i-upload"/></svg></span><span><strong>Restaurar backup</strong><small>Importar um arquivo salvo</small></span><svg><use href="#i-arrow"/></svg><input id="restoreInput" type="file" accept="application/json,.json"></label><button data-action="export-csv"><span class="setting-icon neutral"><svg><use href="#i-receipt"/></svg></span><span><strong>Exportar planilha</strong><small>Baixar movimentações em CSV</small></span><svg><use href="#i-arrow"/></svg></button></section>
-                    <section class="settings-group danger-zone"><h2>Dados do aplicativo</h2><button data-action="clear-data"><span class="setting-icon red"><svg><use href="#i-trash"/></svg></span><span><strong>Apagar dados deste aparelho</strong><small>Esta ação pede confirmação</small></span><svg><use href="#i-arrow"/></svg></button></section>
+                    <section class="settings-group danger-zone"><h2>Dados do aplicativo</h2><button data-action="clear-data"><span class="setting-icon red"><svg><use href="#i-trash"/></svg></span><span><strong>Apagar dados deste aparelho</strong><small>Não apaga a nuvem automaticamente</small></span><svg><use href="#i-arrow"/></svg></button></section>
                 </section>
             </main>
         </div>
@@ -111,6 +111,15 @@
 
     <dialog id="confirmDialog" class="app-dialog confirm-dialog"><div><span class="confirm-icon"><svg><use href="#i-trash"/></svg></span><h2 id="confirmTitle">Confirmar ação</h2><p id="confirmText"></p><div class="dialog-actions"><button id="confirmCancel" class="soft-btn">Cancelar</button><button id="confirmAccept" class="danger-btn">Confirmar</button></div></div></dialog>
     <div id="toastRegion" class="toast-region" aria-live="polite"></div>
-    <script src="core.js"></script><script src="script.js"></script>
+    <script src="preflight.js"></script>
+    <script src="core.js"></script>
+    <script src="script.js"></script>
+    <script src="sync-config.js"></script>
+    <script src="app-enhancements.js"></script>
+    <script src="sync-core.js"></script>
+    <script src="sync-storage.js"></script>
+    <script src="sync-ui.js"></script>
+    <script src="sync-engine.js"></script>
+    <script src="sync.js"></script>
 </body>
 </html>

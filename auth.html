@@ -12,9 +12,7 @@
 <body>
   <main class="card">
     <div class="brand"><span class="mark">MF</span><span><strong>MotoFinance PRO</strong><small>Conta e sincronização</small></span></div>
-    <span class="eyebrow" id="eyebrow">Conta</span>
-    <h1 id="title">Entrar</h1>
-    <p id="description">Acesse sua conta para sincronizar seus dados entre aparelhos.</p>
+    <span class="eyebrow" id="eyebrow">Conta</span><h1 id="title">Entrar</h1><p id="description">Acesse sua conta para sincronizar seus dados entre aparelhos.</p>
     <div id="notice" class="notice" role="status" aria-live="polite"></div>
     <form id="authForm">
       <label class="field" id="emailField"><span>E-mail</span><input id="email" type="email" autocomplete="email" required></label>
@@ -22,15 +20,10 @@
       <label class="field" id="confirmField" hidden><span>Confirmar senha</span><input id="confirmPassword" type="password" autocomplete="new-password" minlength="8"></label>
       <button id="submitButton" type="submit">Entrar</button>
     </form>
-    <nav class="links" id="links">
-      <a href="auth.html?mode=login">Entrar</a>
-      <a href="auth.html?mode=signup">Criar conta</a>
-      <a href="auth.html?mode=reset">Esqueci a senha</a>
-    </nav>
+    <nav class="links" id="links"><a href="auth.html?mode=login">Entrar</a><a href="auth.html?mode=signup">Criar conta</a><a href="auth.html?mode=reset">Esqueci a senha</a></nav>
     <a class="back" href="./#more">← Voltar ao MotoFinance</a>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
-  <script src="sync-core.js"></script>
-  <script src="auth.js"></script>
+  <script src="sync-config.js"></script><script src="sync-core.js"></script><script src="auth.js"></script>
 </body>
 </html>
