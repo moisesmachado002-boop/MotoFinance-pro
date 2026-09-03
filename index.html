@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>MotoFinance PRO v6.1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="mobileOverlay" class="overlay hidden" aria-hidden="true"></div>
+
+    <div class="app-shell">
+        <aside id="sidebar" class="sidebar" aria-label="Filtros e configurações">
+            <div class="brand">
+                <div class="brand-icon" aria-hidden="true">🏍️</div>
+                <div>
+                    <strong>MotoFinance</strong>
+                    <span>Controle profissional</span>
+                </div>
+            </div>
+
+            <section class="sidebar-section">
+                <div class="section-title">Filtrar relatório</div>
+
+                <label class="field">
+                    <span>Período</span>
+                    <select id="filtroPeriodo">
+                        <option value="MES">Por mês</option>
+                        <option value="SEMANA">Por semana</option>
+                        <option value="PERSONALIZADO">Período personalizado</option>
+                        <option value="TODOS">Todos os lançamentos</option>
+                    </select>
+                </label>
+
+                <label id="grupoFiltroMes" class="field">
+                    <span>Mês</span>
+                    <input id="filtroMes" type="month">
+                </label>
+
+                <label id="grupoFiltroSemana" class="field hidden">
+                    <span>Semana</span>
+                    <input id="filtroSemana" type="week">
+                </label>
+
+                <div id="grupoFiltroPersonalizado" class="grid-two hidden">
+                    <label class="field">
+                        <span>Data inicial</span>
+                        <input id="filtroInicio" type="date">
+                    </label>
+                    <label class="field">
+                        <span>Data final</span>
+                        <input id="filtroFim" type="date">
+                    </label>
+                </div>
+
+                <label class="field">
+                    <span>Tipo</span>
+                    <select id="filtroTipo">
+                        <option value="TODOS">Todos</option>
+                        <option value="RECEITA">Receitas</option>
+                        <option value="COMBUSTIVEL">Combustível</option>
+                        <option value="MANUTENCAO">Manutenção</option>
+                        <option value="KM">Quilometragem</option>
+                    </select>
+                </label>
+
+                <label class="field">
+                    <span>Origem da receita</span>
+                    <select id="filtroOrigem">
+                        <option value="TODOS">Todas</option>
+                        <option value="IFOOD">iFood</option>
+                        <option value="99">99</option>
+                        <option value="OUTRAS_CORRIDAS">Outras correrias</option>
+                    </select>
+                </label>
+
+                <label class="field">
+                    <span>Pesquisar</span>
+                    <input id="filtroPesquisa" type="search" placeholder="Descrição, categoria...">
+                </label>
+
+                <div class="filter-actions">
+                    <button id="btnAplicarFiltro" class="btn btn-primary" type="button">Aplicar filtro</button>
+                    <button id="btnLimparFiltro" class="btn btn-ghost" type="button">Limpar</button>
+                </div>
+            </section>
+
+            <section class="sidebar-section">
+                <div class="section-title">Configurações</div>
+                <button id="btnAbrirMetas" class="menu-button" type="button">
+                    <span>🎯</span>
+                    <span><strong>Metas</strong><small>Semanal e mensal</small></span>
+                </button>
+                <button id="btnExportarJSON" class="menu-button" type="button">
+                    <span>💾</span>
+                    <span><strong>Backup</strong><small>Exportar arquivo JSON</small></span>
+                </button>
+                <label class="menu-button file-button">
+                    <span>📥</span>
+                    <span><strong>Restaurar</strong><small>Importar backup JSON</small></span>
+                    <input id="inputImportarJSON" type="file" accept="application/json,.json">
+                </label>
+            </section>
+
+            <div class="sidebar-footer">
+                <span>Dados salvos neste navegador</span>
+                <span class="status-dot">●</span>
+            </div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <button id="btnMenuMobile" class="icon-button mobile-only" type="button" aria-label="Abrir filtros">☰</button>
+                    <div>
+                        <h1>Controle Financeiro do Motoboy</h1>
+                        <p id="textoPeriodoAtivo">Carregando período...</p>
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <button id="btnExportarCSV" class="btn btn-secondary" type="button">Exportar CSV</button>
+                    <button id="btnImprimir" class="btn btn-secondary" type="button">Imprimir</button>
+                    <button id="btnNovoLancamento" class="btn btn-primary" type="button">＋ Novo lançamento</button>
+                </div>
+            </header>
+
+            <main class="content">
+                <section class="rule-banner" aria-label="Regra de cálculo">
+                    <div>
+                        <strong>Lucro diário e semanal</strong>
+                        <span>Receitas − combustível</span>
+                    </div>
+                    <div class="rule-divider" aria-hidden="true"></div>
+                    <div>
+                        <strong>Lucro líquido mensal</strong>
+                        <span>Receitas − combustível − manutenção</span>
+                    </div>
+                </section>
+
+                <section class="metrics-grid" aria-label="Indicadores financeiros">
+                    <article class="metric-card">
+                        <div class="metric-label">Receita do período</div>
+                        <div id="cardReceitaPeriodo" class="metric-value">R$ 0,00</div>
+                        <div id="cardReceitaDetalhe" class="metric-note">Sem lançamentos</div>
+                    </article>
+                    <article class="metric-card metric-positive">
+                        <div class="metric-label">Lucro operacional</div>
+                        <div id="cardLucroOperacional" class="metric-value">R$ 0,00</div>
+                        <div class="metric-note">Receita menos combustível</div>
+                    </article>
+                    <article class="metric-card metric-warning">
+                        <div class="metric-label">Combustível</div>
+                        <div id="cardCombustivel" class="metric-value">R$ 0,00</div>
+                        <div class="metric-note">Abatido no resultado diário</div>
+                    </article>
+                    <article class="metric-card metric-danger">
+                        <div class="metric-label">Manutenção</div>
+                        <div id="cardManutencao" class="metric-value">R$ 0,00</div>
+                        <div class="metric-note">Abatida somente no fechamento mensal</div>
+                    </article>
+                    <article class="metric-card">
+                        <div class="metric-label">Quilometragem</div>
+                        <div id="cardKm" class="metric-value">0 km</div>
+                        <div id="cardReceitaKm" class="metric-note">R$ 0,00 por km</div>
+                    </article>
+                    <article class="metric-card metric-net">
+                        <div class="metric-label">Lucro líquido mensal</div>
+                        <div id="cardLucroMensal" class="metric-value">R$ 0,00</div>
+                        <div id="cardMesReferencia" class="metric-note">Mês de referência</div>
+                    </article>
+                </section>
+
+                <section class="goals-grid" aria-label="Metas">
+                    <article class="panel goal-card">
+                        <div class="panel-heading compact">
+                            <div>
+                                <h2>Meta semanal</h2>
+                                <p id="metaSemanalPeriodo">Semana atual</p>
+                            </div>
+                            <strong id="metaSemanalPercentual">0%</strong>
+                        </div>
+                        <div class="progress-track"><div id="barraMetaSemanal" class="progress-fill weekly"></div></div>
+                        <div class="goal-values">
+                            <span id="metaSemanalRealizado">R$ 0,00 realizado</span>
+                            <span id="metaSemanalObjetivo">Meta: R$ 0,00</span>
+                        </div>
+                    </article>
+                    <article class="panel goal-card">
+                        <div class="panel-heading compact">
+                            <div>
+                                <h2>Meta mensal</h2>
+                                <p id="metaMensalPeriodo">Mês atual</p>
+                            </div>
+                            <strong id="metaMensalPercentual">0%</strong>
+                        </div>
+                        <div class="progress-track"><div id="barraMetaMensal" class="progress-fill monthly"></div></div>
+                        <div class="goal-values">
+                            <span id="metaMensalRealizado">R$ 0,00 realizado</span>
+                            <span id="metaMensalObjetivo">Meta: R$ 0,00</span>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="analytics-grid">
+                    <article class="panel chart-panel">
+                        <div class="panel-heading">
+                            <div>
+                                <h2>Receita e lucro operacional por dia</h2>
+                                <p>A manutenção não reduz o lucro diário</p>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="graficoDiario" width="900" height="320" aria-label="Gráfico diário"></canvas>
+                            <div id="graficoVazio" class="empty-chart hidden">Cadastre lançamentos para visualizar o gráfico.</div>
+                        </div>
+                    </article>
+                    <article class="panel source-panel">
+                        <div class="panel-heading">
+                            <div>
+                                <h2>Receitas por origem</h2>
+                                <p>Aplicativos e outras correrias</p>
+                            </div>
+                        </div>
+                        <div class="source-content">
+                            <div id="graficoOrigens" class="donut" aria-label="Distribuição das receitas"><span id="donutTotal">R$ 0</span></div>
+                            <div class="source-list">
+                                <div><span class="legend-dot ifood"></span><span>iFood</span><strong id="origemIfood">R$ 0,00</strong></div>
+                                <div><span class="legend-dot novenove"></span><span>99</span><strong id="origem99">R$ 0,00</strong></div>
+                                <div><span class="legend-dot extras"></span><span>Outras correrias</span><strong id="origemExtras">R$ 0,00</strong></div>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-heading table-heading">
+                        <div>
+                            <h2>Lançamentos</h2>
+                            <p>Um item por vez, com confirmação antes de salvar</p>
+                        </div>
+                        <span id="contadorLancamentos" class="badge">0 itens</span>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Tipo</th>
+                                    <th>Origem / categoria</th>
+                                    <th>Descrição</th>
+                                    <th>Valor</th>
+                                    <th>Efeito diário</th>
+                                    <th>Efeito mensal</th>
+                                    <th class="actions-column">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoTabela"></tbody>
+                        </table>
+                        <div id="estadoVazioTabela" class="empty-state">
+                            <strong>Nenhum lançamento encontrado</strong>
+                            <span>Use “Novo lançamento” para começar.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel monthly-report">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Fechamento mensal</h2>
+                            <p id="tituloFechamentoMensal">Mês de referência</p>
+                        </div>
+                        <span class="badge badge-success">Regra mensal aplicada</span>
+                    </div>
+                    <div class="report-grid">
+                        <div><span>Receita iFood</span><strong id="relatorioIfood">R$ 0,00</strong></div>
+                        <div><span>Receita 99</span><strong id="relatorio99">R$ 0,00</strong></div>
+                        <div><span>Outras correrias</span><strong id="relatorioExtras">R$ 0,00</strong></div>
+                        <div><span>Receita total</span><strong id="relatorioReceita">R$ 0,00</strong></div>
+                        <div><span>Combustível</span><strong id="relatorioCombustivel">R$ 0,00</strong></div>
+                        <div><span>Manutenção</span><strong id="relatorioManutencao">R$ 0,00</strong></div>
+                        <div><span>Lucro operacional</span><strong id="relatorioOperacional">R$ 0,00</strong></div>
+                        <div class="report-highlight"><span>Lucro líquido mensal</span><strong id="relatorioLiquido">R$ 0,00</strong></div>
+                        <div><span>Dias trabalhados</span><strong id="relatorioDias">0</strong></div>
+                        <div><span>Quilômetros</span><strong id="relatorioKm">0 km</strong></div>
+                        <div><span>Receita por km</span><strong id="relatorioPorKm">R$ 0,00</strong></div>
+                        <div><span>Média por dia</span><strong id="relatorioMedia">R$ 0,00</strong></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div id="modalLancamento" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tituloModalLancamento">
+        <div class="modal-card large">
+            <div class="modal-header">
+                <div>
+                    <h2 id="tituloModalLancamento">Novo lançamento</h2>
+                    <p>Cadastre somente um item por vez.</p>
+                </div>
+                <button id="btnFecharLancamento" class="icon-button" type="button" aria-label="Fechar">×</button>
+            </div>
+
+            <form id="formLancamento" novalidate>
+                <input id="registroId" type="hidden">
+
+                <div class="info-box">
+                    Pressionar <strong>Enter não salva</strong>. O lançamento só será gravado após revisar e confirmar.
+                </div>
+
+                <div class="form-grid">
+                    <label class="field">
+                        <span>Data *</span>
+                        <input id="inputData" type="date" required>
+                    </label>
+                    <label class="field">
+                        <span>Tipo do item *</span>
+                        <select id="inputTipo" required>
+                            <option value="RECEITA">Receita</option>
+                            <option value="COMBUSTIVEL">Combustível</option>
+                            <option value="MANUTENCAO">Manutenção</option>
+                            <option value="KM">Quilometragem</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div id="grupoReceita" class="form-grid">
+                    <label class="field">
+                        <span>Origem da receita *</span>
+                        <select id="inputOrigem">
+                            <option value="IFOOD">iFood</option>
+                            <option value="99">99</option>
+                            <option value="OUTRAS_CORRIDAS">Outras correrias</option>
+                        </select>
+                    </label>
+                    <label id="grupoCategoriaExtra" class="field hidden">
+                        <span>Categoria da correria *</span>
+                        <select id="inputCategoriaExtra">
+                            <option value="ENTREGA_PARTICULAR">Entrega particular</option>
+                            <option value="FRETE_SERVICO">Frete / serviço</option>
+                            <option value="CORRIDA_PARTICULAR">Corrida particular</option>
+                            <option value="DIARIA_PARCERIA">Diária / parceria</option>
+                            <option value="GORJETA">Gorjeta</option>
+                            <option value="REEMBOLSO">Reembolso</option>
+                            <option value="OUTROS">Outros</option>
+                        </select>
+                    </label>
+                </div>
+
+                <label id="grupoValor" class="field">
+                    <span id="labelValor">Valor (R$) *</span>
+                    <input id="inputValor" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0,00">
+                </label>
+
+                <label id="grupoKm" class="field hidden">
+                    <span>Quilômetros rodados *</span>
+                    <input id="inputKm" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="0">
+                </label>
+
+                <label class="field">
+                    <span>Descrição / observação</span>
+                    <input id="inputDescricao" type="text" maxlength="180" placeholder="Ex.: turno da noite, troca de óleo, abastecimento...">
+                </label>
+
+                <div id="previewLancamento" class="preview-box">Preencha os dados para revisar.</div>
+
+                <div class="modal-actions">
+                    <button id="btnCancelarLancamento" class="btn btn-ghost" type="button">Cancelar</button>
+                    <button id="btnRevisarLancamento" class="btn btn-primary" type="button">Revisar lançamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalConfirmacao" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tituloConfirmacao">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h2 id="tituloConfirmacao">Confirmar lançamento</h2>
+                    <p>Confira os dados antes de gravar.</p>
+                </div>
+                <button id="btnFecharConfirmacao" class="icon-button" type="button" aria-label="Fechar">×</button>
+            </div>
+            <div id="resumoConfirmacao" class="confirmation-summary"></div>
+            <div class="modal-actions">
+                <button id="btnVoltarEdicao" class="btn btn-ghost" type="button">Voltar e editar</button>
+                <button id="btnSalvarConfirmado" class="btn btn-success" type="button">Confirmar e salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalMetas" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tituloModalMetas">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h2 id="tituloModalMetas">Configurar metas</h2>
+                    <p>As metas consideram a receita bruta.</p>
+                </div>
+                <button id="btnFecharMetas" class="icon-button" type="button" aria-label="Fechar">×</button>
+            </div>
+            <div class="form-grid one-column">
+                <label class="field">
+                    <span>Meta semanal (R$)</span>
+                    <input id="inputMetaSemanal" type="number" min="0" step="0.01" inputmode="decimal">
+                </label>
+                <label class="field">
+                    <span>Meta mensal (R$)</span>
+                    <input id="inputMetaMensal" type="number" min="0" step="0.01" inputmode="decimal">
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button id="btnCancelarMetas" class="btn btn-ghost" type="button">Cancelar</button>
+                <button id="btnSalvarMetas" class="btn btn-primary" type="button">Salvar metas</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
