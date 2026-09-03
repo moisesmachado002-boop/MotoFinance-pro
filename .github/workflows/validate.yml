@@ -1,0 +1,20 @@
+name: Validate MotoFinance PRO
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Core tests
+        run: node tests/test_core.js
+      - name: Static PWA tests
+        run: node tests/test_static.js
+      - name: Supabase sync tests
+        run: node tests/test_sync.js
